@@ -1,0 +1,6 @@
+Notes:
+
+To preview, use "bundle exec middleman server"
+
+To deploy, use "deploy"
+
