@@ -203,6 +203,13 @@ in order, and if a match is found for the email address provided, then the API w
 This feature allows you to fine-tune the operation of AvatarAPI, such that you can optimize for speed, cost
 or comprehensivity. 
 
+<aside class="notice">
+ *Performance Tip*: You can include the optional parameter "parallel":"true" to search all specified providers
+ in parallel. This will return a result much quicker, and often will return a more complete result, by combining
+ profile elements of more than one provider. The downside is that the cost of the request will be higher, as you
+ it will have the combined cost of all providers, not just the first provider that returns a result. 
+</aside>
+
 # Providers
 
 ## Get All Providers
