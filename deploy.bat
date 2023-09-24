@@ -1,4 +1,4 @@
-call bundle exec middleman build
+call bundle exec middleman build --verbose
 xcopy build\*.* ..\docs.avatarapi.com /s /Y
 cd ..\docs.avatarapi.com 
 git add --all
