@@ -98,11 +98,16 @@ request(options, function (error, response) {
 ```json
 {
     "Name": "",
-    "Image": "https://s3.avatarapi.com/7b18eb6f263b1efb30f1dbb7f7c9a7accdebfbd710cc45d922d0c0dd48746876.gif",
+    "Image": "https://s3.avatarapi.com/fe975b72194e729e0883bab6f9d7e0d72c304fd2f28c9fe6a77afe840065aad7.gif",
     "Valid": true,
     "City": "",
     "Country": "",
-    "IsDefault": true
+    "IsDefault": true,
+    "Success": true,
+    "RawData": "",
+    "Source": {
+        "Name": "Microsoft"
+    }
 }
 ```
 
@@ -132,7 +137,7 @@ https.use_ssl = true
 
 request = Net::HTTP::Post.new(url)
 request["Content-Type"] = "text/plain"
-request.body = "{\"username\":\"YOUR_USERNAME\",\"password\":\"YOUR_PASSWORD\",\"email\":\"Coco_crocodile@outlook.com\",\"provider\":\"Microsoft,Google\"}"
+request.body = "{\"username\":\"YOUR_USERNAME\",\"password\":\"YOUR_PASSWORD\",\"email\":\"Coco_crocodile@outlook.com\",\"provider\":\"Gravatar,Microsoft\"}"
 
 response = https.request(request)
 puts response.read_body
@@ -144,7 +149,7 @@ import requests
 
 url = "https://avatarapi.com/v2/api.aspx"
 
-payload = "{\"username\":\"YOUR_USERNAME\",\"password\":\"YOUR_PASSWORD\",\"email\":\"Coco_crocodile@outlook.com\",\"provider\":\"Microsoft,Google\"}"
+payload = "{\"username\":\"YOUR_USERNAME\",\"password\":\"YOUR_PASSWORD\",\"email\":\"Coco_crocodile@outlook.com\",\"provider\":\"Gravatar,Microsoft\"}"
 headers = {
   'Content-Type': 'text/plain'
 }
@@ -159,7 +164,7 @@ curl --location --request POST 'https://avatarapi.com/v2/api.aspx' \
 --data-raw '{ 
     "username" : "YOUR_USERNAME",
     "password" : "YOUR_PASSWORD",
-    "provider" : "Microsoft,Google",
+    "provider" : "Gravatar,Microsoft",
     "email" : "Coco_crocodile@outlook.com"
 }'
 ```
@@ -172,7 +177,7 @@ var options = {
   'headers': {
     'Content-Type': 'text/plain'
   },
-  body: '{"username":"YOUR_USERNAME","password":"YOUR_PASSWORD","email":"Coco_crocodile@outlook.com", "provider" : "Microsoft,Google"}'
+  body: '{"username":"YOUR_USERNAME","password":"YOUR_PASSWORD","email":"Coco_crocodile@outlook.com", "provider" : "Gravatar,Microsoft"}'
 
 };
 request(options, function (error, response) {
@@ -185,12 +190,17 @@ request(options, function (error, response) {
 
 ```json
 {
-    "Name": "",
-    "Image": "https://s3.avatarapi.com/7b18eb6f263b1efb30f1dbb7f7c9a7accdebfbd710cc45d922d0c0dd48746876.gif",
+    "Name": "coco crocodile",
+    "Image": "http://www.gravatar.com/avatar/90d0336f75e620d5ef8c4affbb2e9aac?s=181",
     "Valid": true,
     "City": "",
     "Country": "",
-    "IsDefault": true
+    "IsDefault": false,
+    "Success": true,
+    "RawData": "{\"entry\":[{\"hash\":\"90d0336f75e620d5ef8c4affbb2e9aac\",\"requestHash\":\"90d0336f75e620d5ef8c4affbb2e9aac\",\"profileUrl\":\"https:\/\/gravatar.com\/cococrocodile\",\"preferredUsername\":\"cococrocodile\",\"thumbnailUrl\":\"https:\/\/2.gravatar.com\/avatar\/90d0336f75e620d5ef8c4affbb2e9aac\",\"photos\":[{\"value\":\"https:\/\/2.gravatar.com\/avatar\/90d0336f75e620d5ef8c4affbb2e9aac\",\"type\":\"thumbnail\"}],\"last_profile_edit\":\"2023-09-24 15:57:45\",\"name\":{\"givenName\":\"coco\",\"familyName\":\"crocodile\",\"formatted\":\"coco crocodile\"},\"displayName\":\"Coco Crocodile\",\"urls\":[]}]}",
+    "Source": {
+        "Name": "Gravatar"
+    }
 }
 ```
 
@@ -298,7 +308,285 @@ Cache,Google,Microsoft,Gravatar,Skype,Flickr, then Adobe.
 Costs accumulate over providers, and they are called in order. Once a match is found then the API
 will return. You should prioritize the providers based on your business use case.
 
+## Provider Raw Data
 
+Most providers also return raw data in the response payload, this raw data is typically JSON, but can
+also be XML. The raw data is subject to change, and the exact format of the raw data is beyond the scope
+of AvatarAPI, however, it may be used to obtain much richer information about a profile, given that you
+should have adequate controls to ensure that your application is not dependent on the format and consistency
+of this Raw data.
+
+On the right hand side, is some examples of Raw Data that you can expect from various providers:
+
+Google & Microsoft do not return additional Raw Data.
+
+> Adobe
+
+```json
+[
+    {
+        "type": "individual",
+        "authenticationMethods": [
+            {
+                "id": "google",
+                "url": "https://adobeid-na1.services.adobe.com/renga-idprovider/social/v2/signin/google"
+            }
+        ],
+        "status": {
+            "code": "active",
+            "reason": null
+        },
+        "images": {
+            "50": "https://example.com/img/profile/avatars/generic-50.png?cb=264615658",
+            "100": "https://example.com/img/profile/avatars/generic-100.png?cb=264615658",
+            "115": "https://example.com/img/profile/avatars/generic-115.png?cb=264615658",
+            "138": "https://example.com/img/profile/avatars/generic-138.png?cb=264615658",
+            "230": "https://example.com/img/profile/avatars/generic-230.png?cb=264615658",
+            "276": "https://example.com/img/profile/avatars/generic-276.png?cb=264615658"
+        },
+        "hasT2ELinked": false
+    }
+]
+
+```
+
+> Flickr
+
+```php
+<?xml version="1.0" encoding="utf-8" ?>
+<rsp stat="ok">
+ <person id="12345678@N04" nsid="12345678@N04" ispro="0" is_deleted="0" iconserver="2257" iconfarm="3" path_alias="random_alias" has_stats="0" has_adfree="0" has_free_standard_shipping="0" has_free_educational_resources="0">
+  <username>Dr. Random</username>
+  <realname>Random Name</realname>
+  <location />
+  <timezone label="Random City, Random State" offset="+00:00" timezone_id="Europe/London" timezone="57" />
+  <description>Random Description</description>
+  <photosurl>https://www.flickr.com/photos/random_alias/</photosurl>
+  <profileurl>https://www.flickr.com/people/random_alias/</profileurl>
+  <mobileurl>https://m.flickr.com/photostream.gne?id=12345678</mobileurl>
+  <photos>
+   <firstdatetaken>2000-01-01 00:00:00</firstdatetaken>
+   <firstdate>946684800</firstdate>
+   <count>10</count>
+  </photos>
+ </person>
+</rsp>
+```
+
+> Gravatar
+
+```json
+{
+    "entry": [
+        {
+            "hash": "abcdef1234567890abcdef1234567890",
+            "requestHash": "abcdef1234567890abcdef1234567890",
+            "profileUrl": "https://gravatar.com/genericuser",
+            "preferredUsername": "genericuser",
+            "thumbnailUrl": "https://2.gravatar.com/avatar/abcdef1234567890abcdef1234567890",
+            "photos": [
+                {
+                    "value": "https://2.gravatar.com/avatar/abcdef1234567890abcdef1234567890",
+                    "type": "thumbnail"
+                }
+            ],
+            "last_profile_edit": "2023-09-24 15:57:45",
+            "name": {
+                "givenName": "generic",
+                "familyName": "user",
+                "formatted": "generic user"
+            },
+            "displayName": "Generic User",
+            "urls": []
+        }
+    ]
+}
+```
+
+> LinkedIn
+
+```json
+{
+    "resultTemplate": "ExactMatch",
+    "bound": true,
+    "bindUrl": "https://login.live.com/accountbind.srf?provider=linkedin.com&redirect_uri=https://loki.delve.office.com/linkedInAuthRedirect.aspx&client_id=000000004C1E916B&dualbind=1&mkt=EN-US&external_app=Owa&dualbindmobile=True",
+    "persons": [
+        {
+            "id": "urn:li:person:RandomID123456789",
+            "displayName": "JOHN DOE",
+            "firstName": "JOHN",
+            "lastName": "DOE",
+            "phoneNumbers": [],
+            "headline": "Senior Education Consultant at Generic College",
+            "companyName": "Generic College",
+            "location": "Random City, Random State, United States",
+            "photoUrl": "https://media.licdn.com/dms/image/C4E03AQEaByYCSkSXuA/profile-displayphoto-shrink_400_400/0/1651340361465?e=1695646800&v=beta&t=R2eHGHp5TDPC7DIfY1L2rPxWAqQ42p7Md8k2AbuUO3M",
+            "linkedInUrl": "https://linkedin.com/in/john-doe-123456789",
+            "reportProfileUrl": "https://linkedin.com/in/john-doe-123456789/report",
+            "connectionCount": 22,
+            "isConnectionCountObfuscated": false,
+            "connectionDegree": "Out_of_Network",
+            "connectionStatus": "NotConnected",
+            "locale": {
+                "country": "us",
+                "language": "en"
+            },
+            "schools": {
+                "educationsCount": 0,
+                "educationHistory": []
+            },
+            "positions": {
+                "positionsCount": 1,
+                "positionHistory": [
+                    {
+                        "title": "Senior Education Consultant",
+                        "startEndDate": {
+                            "start": {},
+                            "end": {}
+                        },
+                        "company": {
+                            "companyName": "Generic College",
+                            "companyLogo": "https://media.licdn.com/dms/image/C560BAQEamcxSpBiiqQ/company-logo_400_400/0/1657471677364?e=1695646800&v=beta&t=9N0sW8lobduAolA9mnFpY1CQqJx6J1eAadWxPJcWDyI",
+                            "linkedInUrl": "https://www.linkedin.com/organization/generic-college"
+                        },
+                        "companyName": "Generic College",
+                        "companyLogo": "https://media.licdn.com/dms/image/C560BAQEamcxSpBiiqQ/company-logo_400_400/0/1657471677364?e=1695646800&v=beta&t=9N0sW8lobduAolA9mnFpY1CQqJx6J1eAadWxPJcWDyI",
+                        "linkedInUrl": "https://www.linkedin.com/organization/generic-college"
+                    }
+                ]
+            },
+            "skillEndorsements": {
+                "skillEndorsementsCount": 0,
+                "skillEndorsements": []
+            },
+            "newsMentions": {
+                "newsMentionCount": 0,
+                "newsMentions": []
+            },
+            "userGeneratedContents": {
+                "userGeneratedContentCount": 2,
+                "userGeneratedContents": [
+                    {
+                        "description": "",
+                        "url": "https://www.linkedin.com/feed/update/urn:li:share:randomShareID1",
+                        "createdOn": {
+                            "month": 10,
+                            "year": 2022,
+                            "day": 18
+                        },
+                        "thumbnails": [],
+                        "mediaCategory": "NONE"
+                    },
+                    {
+                        "description": "",
+                        "url": "https://www.linkedin.com/feed/update/urn:li:share:randomShareID2",
+                        "createdOn": {
+                            "month": 9,
+                            "year": 2022,
+                            "day": 5
+                        },
+                        "thumbnails": [],
+                        "mediaCategory": "NONE"
+                    }
+                ]
+            },
+            "isPublic": false
+        }
+    ],
+    "joinNowUrl": "https://www.linkedin.com/start/join"
+}
+
+```
+
+> Skype
+
+```json
+{
+    "requestId": "568521",
+    "results": [
+        {
+            "nodeProfileData": {
+                "skypeId": "live:.cid.randomid123456",
+                "skypeHandle": "live:.cid.randomid123456",
+                "name": "John Doe",
+                "avatarUrl": "https://api.skype.com/users/live:.cid.randomid123456/profile/avatar",
+                "countryCode": "",
+                "contactType": "Skype4Consumer",
+                "avatarImageUrl": "https://avatar.skype.com/v1/avatars/live:.cid.randomid123456/public?size=l"
+            }
+        }
+    ]
+}
+
+```
+
+> Zoho
+
+```json
+{
+    "lookup": {
+        "identifier": "12345678",
+        "loginid": "john.doe@examplecorp.com",
+        "modes": {
+            "allowed_modes": [
+                "password",
+                "email"
+            ],
+            "email": {
+                "data": [
+                    {
+                        "e_email": "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "email": "jo**********oe@example****.c**"
+                    }
+                ],
+                "count": 1
+            }
+        },
+        "doc_link": "https://zurl.to/contactadmin_signin",
+        "digest": "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "admin": "ad&#x2a;&#x2a;&#x2a;&#x2a;in&#x40;example&#x2a;&#x2a;&#x2a;&#x2a;.c&#x2a;&#x2a;",
+        "href": "https://accounts.zoho.com/signin/v2/lookup/john.doe@examplecorp.com"
+    },
+    "status_code": 201,
+    "code": "U200",
+    "resource_name": "lookup",
+    "message": "User exists"
+}
+
+```
+
+> GitHub
+
+```json
+{
+    "total_count": 1,
+    "incomplete_results": false,
+    "items": [
+        {
+            "login": "JohnDoe123",
+            "id": 1234567,
+            "node_id": "MDQ6VXNlcjEyMzQ1Njc=",
+            "avatar_url": "https://avatars.githubusercontent.com/u/1234567?v=4",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/JohnDoe123",
+            "html_url": "https://github.com/JohnDoe123",
+            "followers_url": "https://api.github.com/users/JohnDoe123/followers",
+            "following_url": "https://api.github.com/users/JohnDoe123/following{/other_user}",
+            "gists_url": "https://api.github.com/users/JohnDoe123/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/JohnDoe123/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/JohnDoe123/subscriptions",
+            "organizations_url": "https://api.github.com/users/JohnDoe123/orgs",
+            "repos_url": "https://api.github.com/users/JohnDoe123/repos",
+            "events_url": "https://api.github.com/users/JohnDoe123/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/JohnDoe123/received_events",
+            "type": "User",
+            "site_admin": false,
+            "score": 1.0
+        }
+    ]
+}
+
+```
 
 ### HTTP Request
 
