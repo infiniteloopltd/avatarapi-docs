@@ -711,29 +711,6 @@ Google & Microsoft do not return additional Raw Data.
 
 ```
 
-> Yandex
-
-```json
-{
-  "success": true,
-  "verified": false,
-  "owner": {
-    "uid": "30760636",
-    "login": "KoshkA5568",
-    "name": "KoshkA5568",
-    "avatarHash": "20706/enc-1161bf8603d2abebbac88c75762535ac98eee9008467e0d4eb455d6405be2647",
-    "havePlus": null
-  },
-  "visibility": "public",
-  "counts": {
-    "likedArtists": 0,
-    "likedAlbums": 0
-  },
-  "hasTracks": true
-}
-
-```
-
 ### HTTP Request
 
 `GET https://www.avatarapi.com/v2/providers.aspx`
